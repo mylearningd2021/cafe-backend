@@ -5,9 +5,11 @@ import com.dg.cafe.service.UserService;
 import com.dg.cafe.utils.CafeUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Service
 public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
