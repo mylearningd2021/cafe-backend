@@ -26,3 +26,26 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL8Dialect
 execution [Unknown database 'cafe-backend'] [n/a]
 ==>
 CREATE SCHEMA `cafe-backend` ;
+
+
+4)17:48:07.149: [cafe] git -c credential.helper= -c core.quotepath=false -c log.showSignature=false push --progress --porcelain origin refs/heads/master:master
+  fatal: unable to access 'https://github.com/mylearningd2021/cafe-backend.git/': Recv failure: Connection was reset
+==> use personal n/w
+
+6
+
+
+
+5) Now signup is working -- created new branch branch1
+    branch1 -added dependencies
+        guava
+        gson
+        android-json
+        spring-boot-starter-security
+        spring-boot-starter-test
+        spring-boot-starter-mail
+        jjwt
+        itext
+        pdfbox
+
+7)
