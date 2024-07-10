@@ -14,6 +14,8 @@ import java.io.Serializable;
 //@DynamicUpdate
 public class User implements Serializable {
 
+    private static final Long serialVersionUID = 1l;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
