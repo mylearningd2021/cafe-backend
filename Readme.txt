@@ -48,4 +48,6 @@ CREATE SCHEMA `cafe-backend` ;
         itext
         pdfbox
 
-7)
+7)While configuring security we are not getting WebSecurityConfigurerAdapater class that why spring
+boot version changed from <version>3.3.1</version> to <version>2.6.3</version>
+

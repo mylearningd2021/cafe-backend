@@ -1,10 +1,9 @@
 package com.dg.cafe.pojo;
-
-import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 @NamedQuery(name = "User.findByEmail", query = "select u from User u where u.email=:email")

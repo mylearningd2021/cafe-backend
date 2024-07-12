@@ -2,22 +2,38 @@ package com.dg.cafe.serviceImpl;
 
 import com.dg.cafe.constants.CafeConstants;
 import com.dg.cafe.dao.UserDao;
+import com.dg.cafe.jwt.CustomeUserDetailsService;
+import com.dg.cafe.jwt.JwtUtils;
 import com.dg.cafe.pojo.User;
 import com.dg.cafe.service.UserService;
 import com.dg.cafe.utils.CafeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @Autowired
+    private CustomeUserDetailsService customeUserDetailsService;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -38,6 +54,34 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
        }
         return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> login(Map<String, String> requestMap) {
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestMap.get("email"), requestMap.get("password"))
+            );
+            if(authentication.isAuthenticated())
+            {
+                if(customeUserDetailsService.getCafeUser().getStatus().equalsIgnoreCase("true")){
+                    return new ResponseEntity<>("\"token\": \""+
+                            jwtUtils.generateToken(customeUserDetailsService.getCafeUser().getEmail(),
+                                    customeUserDetailsService.getCafeUser().getRole())+"\"}",
+                            HttpStatus.OK);
+                }else {
+                    return new ResponseEntity<>("\"message\": \""+"Wait for admin approval"+"\"}"
+                            ,HttpStatus.OK);
+                }
+
+            }
+        }catch (Exception e)
+        {
+            log.error("UserRestControllerImpl: login() - Inside Catch block -"+e);
+        }
+        return new ResponseEntity<>("Bad Credentials"
+                ,HttpStatus.OK);
     }
 
     private User getUserFromMap(Map<String, String> requestMap) {
