@@ -13,4 +13,6 @@ public interface UserService {
     ResponseEntity<String> login(Map<String, String> requestMap);
 
     List<User> getAllUsers();
+
+    ResponseEntity<String> update(String status, String id);
 }

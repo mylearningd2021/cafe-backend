@@ -1,9 +1,10 @@
 package com.dg.cafe.serviceImpl;
 
 import com.dg.cafe.constants.CafeConstants;
-import com.dg.cafe.dao.UserDao;
+import com.dg.cafe.repo.UserRepository;
 import com.dg.cafe.dto.UserDto;
 import com.dg.cafe.jwt.CustomeUserDetailsService;
+import com.dg.cafe.jwt.JwtFilter;
 import com.dg.cafe.jwt.JwtUtils;
 import com.dg.cafe.pojo.User;
 import com.dg.cafe.service.UserService;
@@ -18,21 +19,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserDao userDao;
+    private UserRepository repository;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private JwtFilter jwtFilter;
+
     @Autowired
     private CustomeUserDetailsService customeUserDetailsService;
     @Autowired
@@ -41,9 +43,9 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
        try {
            if (UserServiceImpl.validateSignUpMap(requestMap)) {
-               User user = userDao.findByEmail(requestMap.get("email"));
+               User user = repository.findByEmail(requestMap.get("email"));
                if (Objects.isNull(user)) {
-                   userDao.save(getUserFromMap(requestMap));
+                   repository.save(getUserFromMap(requestMap));
                    return CafeUtils.getResponseEntity("User registered successfully", HttpStatus.OK);
                } else {
                    return CafeUtils.getResponseEntity("User already exist", HttpStatus.BAD_REQUEST);
@@ -88,16 +90,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        //UserDto userDto = new UserDto();
         List<UserDto> dtoUsers = new ArrayList<>();
         List<User> users = null;
         try {
-            users = userDao.findAll();
+            users = repository.findAll();
             //modelMapper.map(users,dtoUsers);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return users;
+    }
+
+    @Override
+    public ResponseEntity<String> update(String status, String id) {
+        if(jwtFilter.isAdmin())
+        {
+            Optional<User> userOptional = repository.findById(Integer.parseInt(id));
+            if(userOptional.isPresent())
+            {
+                repository.updateStatus(status, id);
+                return new ResponseEntity<>("User status updated sucessfully...", HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>("User doesn't exist", HttpStatus.OK);
+            }
+        }else {
+            return new ResponseEntity<>("Unauthorized access", HttpStatus.OK);
+        }
     }
 
     private User getUserFromMap(Map<String, String> requestMap) {
@@ -109,8 +127,6 @@ public class UserServiceImpl implements UserService {
         user.setRole("user");
         user.setStatus("false");
         return user;
-
-
     }
 
 
