@@ -31,14 +31,13 @@ public class UserServiceImpl implements UserService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtils jwtUtils;
-
     @Autowired
     private JwtFilter jwtFilter;
-
     @Autowired
     private CustomeUserDetailsService customeUserDetailsService;
     @Autowired
     private ModelMapper modelMapper;
+
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
        try {
@@ -62,7 +61,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> login(Map<String, String> requestMap) {
-
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestMap.get("email"), requestMap.get("password"))
@@ -78,7 +76,6 @@ public class UserServiceImpl implements UserService {
                     return new ResponseEntity<>("\"message\": \""+"Wait for admin approval"+"\"}"
                             ,HttpStatus.OK);
                 }
-
             }
         }catch (Exception e)
         {
@@ -128,7 +125,6 @@ public class UserServiceImpl implements UserService {
         user.setStatus("false");
         return user;
     }
-
 
     public static boolean validateSignUpMap(Map<String, String> requestMap) {
         if (requestMap.containsKey("name") && requestMap.containsKey("contactNumber")
