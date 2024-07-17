@@ -2,12 +2,14 @@ package com.dg.cafe.serviceImpl;
 
 import com.dg.cafe.constants.CafeConstants;
 import com.dg.cafe.dao.UserDao;
+import com.dg.cafe.dto.UserDto;
 import com.dg.cafe.jwt.CustomeUserDetailsService;
 import com.dg.cafe.jwt.JwtUtils;
 import com.dg.cafe.pojo.User;
 import com.dg.cafe.service.UserService;
 import com.dg.cafe.utils.CafeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,16 +29,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtUtils jwtUtils;
-
     @Autowired
     private CustomeUserDetailsService customeUserDetailsService;
-
+    @Autowired
+    private ModelMapper modelMapper;
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
        try {
@@ -82,6 +84,20 @@ public class UserServiceImpl implements UserService {
         }
         return new ResponseEntity<>("Bad Credentials"
                 ,HttpStatus.OK);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        //UserDto userDto = new UserDto();
+        List<UserDto> dtoUsers = new ArrayList<>();
+        List<User> users = null;
+        try {
+            users = userDao.findAll();
+            //modelMapper.map(users,dtoUsers);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return users;
     }
 
     private User getUserFromMap(Map<String, String> requestMap) {

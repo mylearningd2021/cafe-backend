@@ -26,7 +26,7 @@ public class CustomeUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Inside loadUserByUsername : username ->"+username);
         cafeUser = userDao.findByEmail(username);
-        if (Objects.isNull(cafeUser)) {
+        if (!Objects.isNull(cafeUser)) {
             return new org.springframework.security.core.userdetails.User(cafeUser.getEmail(),
                     cafeUser.getPassword(), new ArrayList<>());
         } else {

@@ -6,7 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@NamedQuery(name = "User.findByEmail", query = "select u from User u where u.email=:email")
 
 @Data
 @Entity

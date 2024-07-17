@@ -2,6 +2,8 @@ package com.dg.cafe.restImpl;
 
 import com.dg.cafe.constants.CafeConstants;
 import com.dg.cafe.dao.UserDao;
+import com.dg.cafe.dto.UserDto;
+import com.dg.cafe.pojo.User;
 import com.dg.cafe.rest.UserRest;
 import com.dg.cafe.service.UserService;
 import com.dg.cafe.utils.CafeUtils;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 @Slf4j
 @RestController
@@ -53,7 +57,18 @@ public class UserRestImpl implements UserRest {
     }
 
     @Override
-    public ResponseEntity<String> signUp() {
+    public ResponseEntity<String> test() {
         return new ResponseEntity<>("working fine...",HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<User>> getAllUsers() {
+        try {
+            List<User> dtoUsers = service.getAllUsers();
+            return new ResponseEntity<>(dtoUsers,HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        //return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
