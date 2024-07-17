@@ -2,7 +2,7 @@ package com.dg.cafe.restImpl;
 
 import com.dg.cafe.constants.CafeConstants;
 import com.dg.cafe.dao.UserDao;
-import com.dg.cafe.dto.UserDto;
+import com.dg.cafe.jwt.JwtFilter;
 import com.dg.cafe.pojo.User;
 import com.dg.cafe.rest.UserRest;
 import com.dg.cafe.service.UserService;
@@ -17,17 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 @Slf4j
 @RestController
 @CrossOrigin
 public class UserRestImpl implements UserRest {
-
 
     @Autowired
     private UserService service;
 
     @Autowired
     private UserDao repo;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -48,27 +51,28 @@ public class UserRestImpl implements UserRest {
         try {
             ResponseEntity<String> loginMesssage = service.login(requestMap);
             return loginMesssage;
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
-            return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
+            return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @Override
     public ResponseEntity<String> test() {
-        return new ResponseEntity<>("working fine...",HttpStatus.OK);
+        return new ResponseEntity<>("working fine...", HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<List<User>> getAllUsers() {
         try {
-            List<User> dtoUsers = service.getAllUsers();
-            return new ResponseEntity<>(dtoUsers,HttpStatus.OK);
+            if (jwtFilter.isAdmin()) {
+                return new ResponseEntity<>(service.getAllUsers(), HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        //return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
