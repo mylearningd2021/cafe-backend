@@ -3,7 +3,7 @@ package com.dg.cafe.restImpl;
 import com.dg.cafe.constants.CafeConstants;
 import com.dg.cafe.repo.UserRepository;
 import com.dg.cafe.jwt.JwtFilter;
-import com.dg.cafe.pojo.User;
+import com.dg.cafe.model.User;
 import com.dg.cafe.rest.UserRest;
 import com.dg.cafe.service.UserService;
 import com.dg.cafe.utils.CafeUtils;
@@ -82,7 +82,12 @@ public class UserRestImpl implements UserRest {
 
     @Override
     public ResponseEntity<String> updateApi(Map<String, String> requestMap) {
-
-        return null;
+        try {
+            log.info("Inside updateApi() try block : UserRestImpl");
+            return service.update(requestMap.get("status"), requestMap.get("id"));
+        } catch (Exception e) {
+            log.info("Inside updateApi() try block : UserRestImpl");
+            throw new RuntimeException(e);
+        }
     }
 }

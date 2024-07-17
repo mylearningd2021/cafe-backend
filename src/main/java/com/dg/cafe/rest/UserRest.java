@@ -1,6 +1,6 @@
 package com.dg.cafe.rest;
 
-import com.dg.cafe.pojo.User;
+import com.dg.cafe.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public interface UserRest {
     @GetMapping(path =  "/test")
     public ResponseEntity<String> test();
 
-    @GetMapping(path =  "/users")
+    @GetMapping(path =  "/getall")
     public ResponseEntity<List<User>> getAllUsersApi();
 
     @PutMapping(path =  "/update")

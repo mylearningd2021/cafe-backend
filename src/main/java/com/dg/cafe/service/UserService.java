@@ -1,7 +1,6 @@
 package com.dg.cafe.service;
 
-import com.dg.cafe.dto.UserDto;
-import com.dg.cafe.pojo.User;
+import com.dg.cafe.model.User;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

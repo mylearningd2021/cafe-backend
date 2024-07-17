@@ -1,7 +1,7 @@
 package com.dg.cafe.jwt;
 
 import com.dg.cafe.repo.UserRepository;
-import com.dg.cafe.pojo.User;
+import com.dg.cafe.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

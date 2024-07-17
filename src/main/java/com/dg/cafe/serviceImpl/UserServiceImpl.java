@@ -6,7 +6,7 @@ import com.dg.cafe.dto.UserDto;
 import com.dg.cafe.jwt.CustomeUserDetailsService;
 import com.dg.cafe.jwt.JwtFilter;
 import com.dg.cafe.jwt.JwtUtils;
-import com.dg.cafe.pojo.User;
+import com.dg.cafe.model.User;
 import com.dg.cafe.service.UserService;
 import com.dg.cafe.utils.CafeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -102,10 +102,10 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> update(String status, String id) {
         if(jwtFilter.isAdmin())
         {
-            Optional<User> userOptional = repository.findById(Integer.parseInt(id));
+            Optional<User> userOptional = repository.findById(Integer. valueOf(id));
             if(userOptional.isPresent())
             {
-                repository.updateStatus(status, id);
+                repository.updateStatus(status, Integer. valueOf(id));
                 return new ResponseEntity<>("User status updated sucessfully...", HttpStatus.OK);
             }else {
                 return new ResponseEntity<>("User doesn't exist", HttpStatus.OK);

@@ -51,3 +51,8 @@ CREATE SCHEMA `cafe-backend` ;
 7)While configuring security we are not getting WebSecurityConfigurerAdapater class that why spring
 boot version changed from <version>3.3.1</version> to <version>2.6.3</version>
 
+8)2024-07-17 20:07:17.081 ERROR 10116 --- [nio-8081-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is java.lang.RuntimeException: org.springframework.dao.InvalidDataAccessApiUsageException: org.hibernate.hql.internal.QueryExecutionRequestException: Not supported for DML operations [update com.dg.cafe.model.User set status=:status where id=:id]; nested exception is java.lang.IllegalStateException: org.hibernate.hql.internal.QueryExecutionRequestException: Not supported for DML operations [update com.dg.cafe.model.User set status=:status where id=:id]] with root cause
+
+9) java.lang.IllegalArgumentException: Modifying queries can only use void or int/Integer as return type!
+ Offending method: public abstract com.dg.cafe.model.User com.dg.cafe.repo.UserRepository.updateStatus(java.
+ lang.String,java.lang.Integer)] with root cause

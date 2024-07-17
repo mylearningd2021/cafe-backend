@@ -1,4 +1,4 @@
-package com.dg.cafe.pojo;
+package com.dg.cafe.model;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
