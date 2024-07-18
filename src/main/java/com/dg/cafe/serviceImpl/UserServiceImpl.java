@@ -1,6 +1,7 @@
 package com.dg.cafe.serviceImpl;
 
 import com.dg.cafe.constants.CafeConstants;
+import com.dg.cafe.jwt.LoginService;
 import com.dg.cafe.repo.UserRepository;
 import com.dg.cafe.dto.UserDto;
 import com.dg.cafe.jwt.CustomeUserDetailsService;
@@ -9,6 +10,7 @@ import com.dg.cafe.jwt.JwtUtils;
 import com.dg.cafe.model.User;
 import com.dg.cafe.service.UserService;
 import com.dg.cafe.utils.CafeUtils;
+import com.dg.cafe.utils.EmailUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +30,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository repository;
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
     private JwtUtils jwtUtils;
     @Autowired
     private JwtFilter jwtFilter;
     @Autowired
-    private CustomeUserDetailsService customeUserDetailsService;
+    private EmailUtils emailUtils;
+
     @Autowired
-    private ModelMapper modelMapper;
+    private LoginService loginService;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -61,28 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> login(Map<String, String> requestMap) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(requestMap.get("email"), requestMap.get("password"))
-            );
-            if(authentication.isAuthenticated())
-            {
-                if(customeUserDetailsService.getCafeUser().getStatus().equalsIgnoreCase("true")){
-                    return new ResponseEntity<>("\"token\": \""+
-                            jwtUtils.generateToken(customeUserDetailsService.getCafeUser().getEmail(),
-                                    customeUserDetailsService.getCafeUser().getRole())+"\"}",
-                            HttpStatus.OK);
-                }else {
-                    return new ResponseEntity<>("\"message\": \""+"Wait for admin approval"+"\"}"
-                            ,HttpStatus.OK);
-                }
-            }
-        }catch (Exception e)
-        {
-            log.error("UserRestControllerImpl: login() - Inside Catch block -"+e);
-        }
-        return new ResponseEntity<>("Bad Credentials"
-                ,HttpStatus.OK);
+        return loginService.authenticateCafeUser(requestMap);
     }
 
     @Override
@@ -106,6 +86,7 @@ public class UserServiceImpl implements UserService {
             if(userOptional.isPresent())
             {
                 repository.updateStatus(status, Integer. valueOf(id));
+                sendMailToAllAdmin(status,userOptional.get().getEmail(), repository.getAllAdmin());
                 return new ResponseEntity<>("User status updated sucessfully...", HttpStatus.OK);
             }else {
                 return new ResponseEntity<>("User doesn't exist", HttpStatus.OK);
@@ -114,6 +95,18 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>("Unauthorized access", HttpStatus.OK);
         }
     }
+
+    private void sendMailToAllAdmin(String status, String email, List<String> allAdmin) {
+        allAdmin.remove(jwtFilter.getCurrentUser());
+        if(status!=null && status.equalsIgnoreCase("true"))
+        {
+            emailUtils.sendSimpleMail(jwtFilter.getCurrentUser(),"Account Approved","Account Enabled for user -"+email+"by admin"+jwtFilter.getCurrentUser(), allAdmin);
+        }else {
+            log.error("UserServiceImpl: sendMailToAllAdmin() : else block");
+        }
+
+    }
+
 
     private User getUserFromMap(Map<String, String> requestMap) {
         User user = new User();

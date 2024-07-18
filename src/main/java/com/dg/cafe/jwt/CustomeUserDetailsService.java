@@ -4,12 +4,17 @@ import com.dg.cafe.repo.UserRepository;
 import com.dg.cafe.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -23,7 +28,7 @@ public class CustomeUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Inside loadUserByUsername : username ->"+username);
+        log.info("Inside loadUserByUsername : username ->" + username);
         cafeUser = userRepository.findByEmail(username);
         if (!Objects.isNull(cafeUser)) {
             return new org.springframework.security.core.userdetails.User(cafeUser.getEmail(),
@@ -33,7 +38,9 @@ public class CustomeUserDetailsService implements UserDetailsService {
         }
     }
 
-    public User getCafeUser(){
+    public User getCafeUser() {
         return cafeUser;
     }
+
+
 }

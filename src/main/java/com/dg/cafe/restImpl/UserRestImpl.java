@@ -25,8 +25,8 @@ public class UserRestImpl implements UserRest {
     @Autowired
     private UserService service;
 
-    @Autowired
-    private UserRepository repo;
+    //@Autowired
+   // private UserRepository repo;
 
     @Autowired
     private JwtFilter jwtFilter;
@@ -86,8 +86,8 @@ public class UserRestImpl implements UserRest {
             log.info("Inside updateApi() try block : UserRestImpl");
             return service.update(requestMap.get("status"), requestMap.get("id"));
         } catch (Exception e) {
-            log.info("Inside updateApi() try block : UserRestImpl");
-            throw new RuntimeException(e);
+            log.info("Inside updateApi() catch block : UserRestImpl");
+            return new ResponseEntity<>("Updation Failed", HttpStatus.BAD_REQUEST);
         }
     }
 }

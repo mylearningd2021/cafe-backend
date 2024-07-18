@@ -22,9 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomeUserDetailsService customeUserDetailsService;
-
     @Autowired
     private JwtFilter jwtFilter;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customeUserDetailsService);

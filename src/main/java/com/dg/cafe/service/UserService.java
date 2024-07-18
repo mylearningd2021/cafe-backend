@@ -14,4 +14,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     ResponseEntity<String> update(String status, String id);
+
+
 }
