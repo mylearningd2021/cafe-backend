@@ -26,3 +26,43 @@ spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL8Dialect
 execution [Unknown database 'cafe-backend'] [n/a]
 ==>
 CREATE SCHEMA `cafe-backend` ;
+
+
+
+
+
+
+
+
+amin:
+
+{
+    "email":"param@malinator.com",
+    "password":"1234"
+}
+
+user:
+{
+		"email":"tom@malinator.com",
+		"password":"1234"
+
+}
+
+
+loginAPI
+http://localhost:8081/user/login
+
+body:
+{
+    "email":"param@malinator.com",
+    "password":"1234"
+}
+
+
+2)Update API
+http://localhost:8081/user/update
+Body:
+{
+    "status":"true",
+    "id":"1"
+}
